@@ -1,0 +1,631 @@
+
+
+//General Game Info:
+var Deck = ["2C","2D","2H","2S","3C","3D","3H","3S","4C","4D","4H","4S","5C","5D","5H","5S","6C","6D","6H","6S","7C","7D","7H","7S","8C","8D","8H","8S","9C","9D","9H","9S","10C","10D","10H","10S","JC","JD","JH","JS","QC","QD","QH","QS","KC","KD","KH","KS","AC","AD","AH","AS","2C","2D","2H","2S","3C","3D","3H","3S","4C","4D","4H","4S","5C","5D","5H","5S","6C","6D","6H","6S","7C","7D","7H","7S","8C","8D","8H","8S","9C","9D","9H","9S","10C","10D","10H","10S","JC","JD","JH","JS","QC","QD","QH","QS","KC","KD","KH","KS","AC","AD","AH","AS","2C","2D","2H","2S","3C","3D","3H","3S","4C","4D","4H","4S","5C","5D","5H","5S","6C","6D","6H","6S","7C","7D","7H","7S","8C","8D","8H","8S","9C","9D","9H","9S","10C","10D","10H","10S","JC","JD","JH","JS","QC","QD","QH","QS","KC","KD","KH","KS","AC","AD","AH","AS"];
+var chipArr = [];
+var chipCounter = 0;
+var translate = 0; //
+var cardPos = 0; //Position of a card in the Deck
+var dPos = 2; //Position of a card in the dealer's deck
+var tracker = 2;
+var moveBy = 0; //Chips spacing
+var win = false;
+var hasAce = false;
+var dealerHasAce = false;
+
+//Dealer Variables:
+var dDeck = [];
+var dealerPoints = 0;
+
+//Player Variables:
+var pDeck = [];
+var playerPoints = 0;
+
+//Money Variables:
+var totalMoney = 3000;
+var money = 0;
+
+//Shuffle the deck using temp swaps
+window.onload = function(){
+    for (var j=0; j<3; j++){
+    for (var i=0; i<Deck.length; i++){
+        //Generate 2 random indexes
+        var ran1 = Math.floor(Math.random()*153);
+        var ran2 = Math.floor(Math.random()*153);
+        
+        //Temp swaps
+        var temp = Deck[ran1];
+        Deck[ran1] = Deck[ran2];
+        Deck[ran2] = temp;
+    }
+}
+
+    //Shows shuffled deck in console
+    console.log("Shuffled Deck: "+Deck);
+}
+
+//Allows player to place bets
+//Deal buttons appears after bet has been placed
+function betting(bettingAmt){
+    
+    if (totalMoney > 0){
+        //Subtracts the betting amount from thr player's total money
+        totalMoney -= bettingAmt;
+        money += bettingAmt;
+        
+        //Displays player's total money
+        $("#playerMoney").text("$"+totalMoney);
+        console.log("totalMoney: "+totalMoney);
+    
+        //Animation values for when chips are to be stacked onto each other
+        var chipColor;
+        var left;
+        var top = 452;
+
+        if(bettingAmt == 5){
+            chipColor = "bd13cc";
+            left = -52;
+        }
+
+        else if(bettingAmt == 20){
+            chipColor = "e09407";
+            left = 100;
+        }
+
+        else if(bettingAmt == 50){
+            chipColor = "070acf";
+            left = 235;
+        }
+
+        else if(bettingAmt == 100){
+            chipColor = "f11079";
+            left = 386;
+        }
+
+        chipArr[chipCounter] = chipColor;
+        chipCounter++;
+
+        //Actual animation for the chips to be stacked onto each other
+        movingChipsAnimation(left, top, chipColor, bettingAmt, 7, 7);
+
+        //Makes the chips move up by 1 pixel
+        moveBy+=1;
+
+        //Calculation done for when the money has to be returned if the player wins
+        // money = Math.abs(3000 - totalMoney);
+
+        // //Animation for userButtons to appear
+        $(".userButtons").animate({left: "30%", opacity: "1"}, "slow");
+        $(".dealBTN").css("visibility", "visible");
+        $(".standBTN").css("visibility","hidden");    
+        $(".hitBTN").css("visibility","hidden");    
+
+        //Changes cursor after reset
+        $(".dealBTN").css("cursor", "pointer");
+        $(".standBTN").css("cursor", "pointer");  
+        $(".hitBTN").css("cursor", "pointer"); 
+    }
+
+    else{
+        alert("Your Bank is Empty");
+    }
+
+}
+
+//Animation for when chips are to be stacked onto each other
+function movingChipsAnimation(left, top, chipColor, bettingAmt, anTop, anLeft){
+    var x = document.createElement("div");
+    var text = document.createElement("p");
+    $(text).text("$"+bettingAmt);
+    $(text).css("position", "absolute");
+    $(text).css("left", "28%");
+    $(text).css("top", "32.5%");
+    $(text).css("font-size", "80%");
+    $(x).css("left", left+"%");
+    $(x).css("top", top+"%");
+    $(x).css("width", "60px");
+    $(x).css("height", "60px");
+    $(x).css("background-color", "#"+chipColor);
+    $(x).css("border-radius", "50%");    
+    $(x).css("margin", "0");
+    $(x).css("color", "#fff");
+    $(x).css("font-weight", "bold");
+    $(x).css("position", "absolute");
+    $(x).css("border", "2px solid white");
+    $(x).css("transform", "translate(0px, -"+moveBy+"px)");
+    $(x).css("box-shadow", "0px 2px 2px 0px rgb(0, 0, 0, 0.5)");
+    $(x).append(text);
+    $(x).animate({top: anTop+"%", left: anLeft+"%"}, "slow");
+    $("#chip").append(x);
+}
+
+//Deal button functionality
+function startGame(){    
+    //Displays two of the dealer's cards
+    for (var i=0; i<2; i++){
+        dealDealerCards();            
+    }    
+    
+    //Translate set to 0 for the player's card to be aligned together
+    translate = 0;
+
+    //Hides deal button, shows hit and stand button    
+    $(".standBTN").css("visibility","visible"); 
+    $(".standBTN").css("cursor","not-allowed");     
+    $(".standBTN").animate({opacity: '1'},"slow");
+    $(".hitBTN").css("visibility","visible");    
+    $(".hitBTN").animate({opacity: '1'},"slow");
+    $(".dealBTN").prop('disabled', true); 
+
+    //Animation for the white line below the chips to go up, concealing the chips
+    var horizRule = document.querySelector("hr");
+    $(horizRule).animate({top: "-=110px"}, 650);
+
+    //Animation for revealing/hiding the chips
+    hrChipAnimation(0, "hidden", 100);
+
+    $("#points").css("visibility","visible"); //Shows player's points   
+    $(".dealBTN").css("cursor", "not-allowed"); //Makes it so that the player cannot access the 'deal button' anymore
+
+    //Reveals player's points
+    $("#points").animate({opacity: "1"}, "fast");
+
+    //Creates a new line for the player cards
+    var newLn = document.createElement("br");
+    $(".container").append(newLn);
+
+    //Displays two of the player's cards
+    for (var i=0; i<2; i++){
+       hit();            
+    }  
+
+}
+
+//Outputs 2 cards for dealer
+function dealDealerCards(){
+    //Stores card at index 'pos' from Deck to dDeck
+    dDeck[cardPos] = Deck[cardPos];
+
+    //Calculates the dealer's points based on the dealer's card in their array
+    CalculateDealerPoints(cardPos);
+
+    //Outputs dDeck
+    console.log("dDeck:\n");
+    console.log(dDeck);
+
+    //Variable exists so that the second card is hidden
+    var cardImg;
+
+    //Creates Image of card based on dDeck's cards
+    var x = document.createElement("IMG");
+    $(x).css("top", "-175%");
+    $(x).css("left", "4%"); 
+    $(x).animate({top: "+=175%"},700);
+    $(x).animate({left: "+="+translate+"%"},1000);
+
+    if(cardPos == 1)
+        cardImg = "cards/otherCards/blue_back.png";
+    else
+        cardImg = "cards/"+dDeck[cardPos]+".png";
+
+    x.setAttribute("src", cardImg);
+    x.setAttribute("width", "138");
+    x.setAttribute("height", "211");
+    x.setAttribute("id", "SecondCard"+cardPos);
+    x.setAttribute("alt", cardImg);
+    $(x).css("margin", "0");
+    $(x).css("position", "absolute");
+    $(x).css("border-radius", "8px");
+    $(x).css("transform", "translate(0px, 0px)");
+    $(x).css("box-shadow", "0px 20px 30px 0px rgba(0, 0, 0, 0.5)");
+    $("#dealerCards").append(x);
+    translate += 20;
+
+    cardPos++;
+}
+
+//Hit button for user
+function hit(){
+
+    for (var i=2; i<cardPos; i++){
+        var card = document.getElementById("playerCard"+i);
+        $(card).css("position", "absolute");
+        $(card).animate({left: "-=5%"}, 675);
+    }
+
+    $(".standBTN").css("cursor", "pointer"); //The player can only access the 'stand button' when they click the 'hit button' 
+
+    //Outputs player's deck
+    console.log("pDeck:\n");
+    console.log(pDeck);
+
+    //take cards from Deck, place them into pDeck
+    pDeck[cardPos] = Deck[cardPos];
+            
+    //create image of card from pDeck, then display image
+    var x = document.createElement("IMG");
+    $(x).css("top", "-330%");
+    $(x).css("left", "0%");
+    $(x).animate({top: "+=330%",left: "+="+translate+"%"}, 600);
+    x.setAttribute("src", "cards/"+pDeck[cardPos]+".png");
+    x.setAttribute("id","playerCard"+cardPos);
+    x.setAttribute("width", "138");
+    x.setAttribute("height", "211");        
+    x.setAttribute("alt", pDeck[cardPos]);
+    $(x).css("margin", "0");
+    $(x).css("position", "absolute");
+    $(x).css("border-radius", "8px");
+    $(x).css("transform", "translate(0px, 0px)");
+    console.log(translate);
+    $(x).css("box-shadow", "0px 20px 30px 0px rgba(0, 0, 0, 0.5)");
+    $("#playerCards").append(x);
+    translate += 20;
+
+    //Calculate the points and sum them up
+    CalculatePlayerPoints(cardPos);
+
+    console.log("pDeck:\n");
+    console.log(pDeck);
+
+    //Increment cardPos to recieve next card
+    cardPos++;
+    tracker++;
+}
+
+//Calculates Player's points based off of card
+function CalculatePlayerPoints(pos){
+
+    //Assign a value to the first character of the element at index pos for comparison 
+    var value = pDeck[pos];
+    var valueAtIndex = value.substring(0,1); 
+
+    //Adds points based on ranking of card
+    if (valueAtIndex == "J" || valueAtIndex == "Q" || valueAtIndex == "K" || valueAtIndex == "1"){
+        playerPoints += 10;
+        console.log("Case 1: "+playerPoints);
+    }
+
+    else if (valueAtIndex == "A"){
+        if (playerPoints == 10)
+            playerPoints += 11; 
+        else if (playerPoints == 20)
+            playerPoints += 1;
+		else 
+            playerPoints += 1;
+        console.log(playerPoints+" after Ace");
+    }
+    
+    else {
+        playerPoints += parseInt(valueAtIndex);
+        console.log("Case 3: "+playerPoints);
+    }
+
+    
+
+    //Display points
+    console.log("playerPoints: "+playerPoints);
+    $("#output").text(playerPoints);
+}
+
+function AceCase(){
+
+    if (hasAce == true){
+        console.log("AceCase");
+        console.log((playerPoints+11)+"/"+(playerPoints+1));
+
+        $("#output").text(playerPoints+11)+"/"+(playerPoints+1);
+    }
+
+
+
+}
+
+function stand(){
+
+    // for (var i=0; i<cardPos; i++){
+    //     if (pDeck[i] == "AH" || pDeck[i] == "AD" || pDeck[i] == "AS" || pDeck[i] == "AC"){
+    //         var value = prompt("11 or 1");
+    //         if (value == 11){
+    //             playerPoints += 11;
+    //         }
+
+    //         else 
+    //             playerPoints += 1;  
+    //     }
+
+    //     // Figure Out Later
+    //     if (dDeck[i] == "AH" || dDeck[i] == "AD" || dDeck[i] == "AS" || dDeck[i] == "AC"){
+    //         // var value = prompt("11 or 1");
+    //         // if (value == 11){
+    //             // playerPoints += 11;
+    //         // }
+
+    //         // else 
+    //             // playerPoints += 1;  
+    //     }
+        
+    // }
+
+    $(".hitBTN").prop("disabled", true);
+    $(".hitBTN").css("cursor", "not-allowed");
+    $(".standBTN").prop("disabled", true);
+    $(".standBTN").css("cursor", "not-allowed");
+
+    moveBy = 25;
+
+    console.log(cardPos);
+
+    //Shows second card of dealer
+    var x = document.getElementById("SecondCard1");
+    x.setAttribute("src", "cards/"+dDeck[1]+".png");    
+
+    //Displays dealer's deck right after player stnads
+    console.log(dDeck);
+
+    //Displays the next card of the dealer that came from the deck
+    while(dealerPoints<17){
+        dealerPoints = dealerPoints;
+        displayCard();
+        tracker++;
+    }
+
+    winningCondition();
+
+    //Reveals the 'restart button'
+    $("#restartBTN").css("visibility", "visible");
+    $("#restartBTN").animate({opacity: "1"}, "slow");
+
+}
+
+function displayCard(){
+
+        var x = document.createElement("img");
+        x.setAttribute("src", "cards/"+Deck[cardPos]+".png");
+        x.setAttribute("width", "138");
+        x.setAttribute("height", "211");
+        x.setAttribute("alt", Deck[cardPos]);
+        x.setAttribute("id", "dealerCard"+dPos);
+        $(x).css("margin", "0");
+        $(x).css("position", "absolute");
+        $(x).css("top", "-175%");
+        $(x).css("left", "0%");
+        $(x).css("border-radius", "8px");
+        $(x).css("transform", "translate(20%, 0px)");
+        $(x).css("box-shadow", "0px 20px 30px 0px rgba(0, 0, 0, 0.5)");
+        $(x).animate({top: "+=175%", left: "+="+moveBy+"%"}, "slow");
+        $("#dealerCards").append(x);
+        moveBy += 20; 
+        dDeck[dPos] = Deck[cardPos];
+        console.log(dDeck);
+
+        CalculateDealerPoints(dPos);
+
+        cardPos++;
+        dPos++;
+}
+
+function CalculateDealerPoints(i){
+  
+    //Assign a value to the first character of the element at index pos for comparison 
+    var value = dDeck[i];
+    var valueAtIndex = value.substring(0,1); 
+
+    //Adds points based on ranking of card
+    if (valueAtIndex == "J" || valueAtIndex == "Q" || valueAtIndex == "K" || valueAtIndex == "1"){
+        dealerPoints += 10;
+        console.log("Case 1: "+dealerPoints);
+    }
+
+    else if (valueAtIndex == "A"){
+        if (dealerPoints == 10)
+            dealerPoints += 11; 
+        else if (dealerPoints == 20)
+            dealerPoints += 1;
+        else 
+            dealerPoints += 1;
+        console.log(dealerPoints+" after Ace");
+    }
+
+    else {
+        dealerPoints += parseInt(valueAtIndex);
+        console.log("Case 3: "+dealerPoints);
+    }
+
+    if (dealerHasAce == true){
+        if (dealerPoints == 10){
+            dealerPoints += 11; 
+        }
+        else if (dealerPoints == 20)
+            dealerPoints += 1;
+		else 
+            dealerPoints += 1;
+    }
+
+    //Display points
+    console.log("dealerPoints: "+dealerPoints);  
+    $("#Doutput").text(playerPoints);     
+}
+
+function winningCondition(){            
+    
+    if (playerPoints == dealerPoints){
+        // alert("flush");
+        console.log("flush");
+    }
+
+    else if (playerPoints > 21 && dealerPoints > 21){
+        // alert("Both Busted!");
+        console.log("Both Busted!");
+    }
+
+    else if (playerPoints <= 21 && dealerPoints > 21) {
+        // alert("Dealer Busted! Player Wins!");
+        console.log("Dealer Busted! Player Wins!");
+        win = true;
+        moneyReturn();
+    }
+
+    else if (dealerPoints <= 21 && playerPoints > 21){
+        // alert("Player Busted! Dealer Wins!");
+        console.log("Player Busted! Dealer Wins!");
+    }
+
+    else if (playerPoints > dealerPoints && playerPoints <= 21) {	
+        // alert("You Win!");
+        console.log("You Win!");
+        win = true;
+        moneyReturn();
+    }
+
+    else if (dealerPoints > playerPoints && dealerPoints <= 21){
+    //    alert("The Dealer Win!");
+       console.log("The Dealer Win!");
+    }
+
+    else if (playerPoints == 21) {
+        // alert("You Win! You got the Black Jack");
+        win = true;
+        console.log("You Win! You got the Black Jack");
+        moneyReturn();
+    }
+
+    else if (dealerPoints == 21){
+        alert("\nThe Dealer Wins! The Dealer got the Black Jack");
+        console.log("\nThe Dealer Wins! The Dealer got the Black Jack");
+        
+    }
+
+    $("#playerMoney").text("$"+totalMoney);
+    console.log("totalMoney: "+totalMoney);
+
+    returnChipsToPlayerAnimation(); 
+
+    // Restart();
+}
+
+//Gives back 2x the money to the player if they win
+function moneyReturn(){
+    totalMoney += 2*money;
+    $("#playerMoney").text("$"+totalMoney);
+}
+
+//Resets all important values including player and dealer decks and layout
+function Restart(){
+    if (Deck.length > 4){
+        
+        $("#restartBTN").animate({opacity: "0"}, "fast");
+    $("#restartBTN").css("visible", "hidden");
+
+    //Reset Values:
+
+    Deck.splice(0, cardPos);
+
+    dealerHasAce = false;
+    hasAce = false;
+    translate = 0;
+    dealerPoints = 0;
+    playerPoints = 0;
+    cardPos = 0;
+    moveBy = 0;
+    money = 0;
+
+    $("#output").text("0");
+
+    //Reset Arrays:
+    console.log(Deck);
+    pDeck = [];
+    dDeck = [];
+
+    //Reset Layout:
+    document.getElementById("dealerCards").innerHTML = ""; 
+    document.getElementById("playerCards").innerHTML = ""; 
+
+    $("#points").css("visibility", "hidden");
+
+    //Reveals the money chips
+    //Animates horizontal rule to move upward
+    var horizRule = document.querySelector("hr");
+    $(horizRule).animate({top: "+=110px"}, "slow");
+
+    //Animation for revealing/hiding the chips
+    hrChipAnimation(1, "visible", "slow");
+
+    //Clears out area where chips are placed
+    $("#chip").empty();
+
+    //Shows deal button, hides stand and hit button
+    $(".userButtons").animate({left: "26%", opacity: "0"}, "slow");
+    
+    //disables the userButtons and makes the cursor default
+    hide();
+
+    //Setting win condition to false to start new game
+    win = false;
+
+    console.log("ROUND ENDED");
+    }
+
+    else{
+        console.log("Deck is Empty");
+    }
+    
+    
+    
+}
+
+function hide(){
+    $(".dealBTN").prop("disabled", false);  
+    $(".standBTN").prop("disabled", false);  
+    $(".hitBTN").prop("disabled", false);  
+    $(".dealBTN").css("cursor", "default");
+    $(".standBTN").css("cursor", "default");  
+    $(".hitBTN").css("cursor", "default");      
+}
+
+function returnChipsToPlayerAnimation(){
+    //Animation for chips returning to user
+    if (win == true){
+        for (var i=(chipArr.length-1); i>=0; i--){
+            if (chipArr[i] == "f11079")
+                movingChipsAnimation(0, 0, chipArr[i], 100, 340, 168);
+            else if (chipArr[i] == "070acf")
+                movingChipsAnimation(0, 0, chipArr[i], 50, 340, 168);
+            else if (chipArr[i] == "07cf39")
+                movingChipsAnimation(0, 0, chipArr[i], 20, 340, 168);
+            else if (chipArr[i] == "e09407")
+                movingChipsAnimation(0, 0, chipArr[i], 10, 340, 168);
+            else if (chipArr[i] == "bd13cc")
+                movingChipsAnimation(0, 0, chipArr[i], 5, 340, 168);
+        }
+        console.log("chipArr: "+chipArr);
+    }
+
+    else if (win == false){
+        for (var j=(chipArr.length-1); j>=0; j--){
+            if (chipArr[j] == "f11079")
+                movingChipsAnimation(0, 0, chipArr[j], 100, -500, 0);
+            else if (chipArr[j] == "070acf")
+                movingChipsAnimation(0, 0, chipArr[j], 50, -500, 0);
+            else if (chipArr[j] == "07cf39")
+                movingChipsAnimation(0, 0, chipArr[j], 20, -500, 0);
+            else if (chipArr[j] == "e09407")
+                movingChipsAnimation(0, 0, chipArr[j], 10, -500, 0);
+            else if (chipArr[j] == "bd13cc")
+                movingChipsAnimation(0, 0, chipArr[j], 5, -500, 0);
+        }
+        console.log("chipArr: "+chipArr);
+    }
+}
+
+function hrChipAnimation(opacityValue, visValue, speed){
+    $("#chip1").css("visibility", visValue);
+    $("#chip2").css("visibility", visValue); 
+    $("#chip3").css("visibility", visValue); 
+    $("#chip4").css("visibility", visValue); 
+    $("#chip5").css("visibility", visValue); 
+    $("#chip1").animate({opacity: opacityValue}, speed);
+    $("#chip2").animate({opacity: opacityValue}, speed);
+    $("#chip3").animate({opacity: opacityValue}, speed);
+    $("#chip4").animate({opacity: opacityValue}, speed);
+    $("#chip5").animate({opacity: opacityValue}, speed);
+}
