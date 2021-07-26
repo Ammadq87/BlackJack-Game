@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- Webpage HTML document for Black-Jack.
+  Authors: Ammad Qureshi -->
+
+<html lang="En">
+    <head>
+        <meta charset="UTF-8">
+        <title> BlackJack</title>
+        <link rel="stylesheet" type="text/css" href="blackjack.css" title="style" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="blackjack.js"></script>
+    </head>
+    <body>
+        
+        
+
+        <div class="container">
+            <!-- Title text -->
+            <h1>Blackjack</h1>
+            <h5>[Minimalistic]</h5>
+            
+            <!-- Green board where all the cards go -->
+            <div id="board">
+            </div>
+            
+            <!-- Test Images for Cards -->
+            <!-- <img id="c1" src="cards/10D.png"> -->
+            <!-- <img id="c2" src="cards/3C.png"> -->
+
+            <!-- Dealer's cards placed in this area -->
+            <div id="dealerCards">
+            </div>
+            
+            <!-- Dealer's points are displayed here -->
+            <div id="Dpoints">
+                <p id="Doutput">0</p>
+            </div>
+
+            <!-- Text displayed on the game-board -->
+            <h4>Pays 3 to 2</h4>
+            <h5 id="text">Dealer stands on 17</h5>
+
+            <!-- Player's cards are placed in this area -->
+            <div id="playerCards">
+            </div>
+
+            <!-- Player's points are displayed here -->
+            <div id="points">
+                <p id="output">0</p>
+            </div>
+
+            <!-- Player's money is displayed here -->
+            <div id="money">
+                <p id="playerMoney">$3000</p>
+            </div>
+
+            <div id="chipBorder">
+            </div>
+
+            <!-- Area where the player's chips go to -->
+            <div id="chip">    
+            </div>
+
+            <!-- Shows the chips the player can select -->
+            <div class="chips">
+                <button id="chip1" onclick="betting(5)">$5</button>
+                <!-- <button id="chip2" onclick="betting(10)">$10</button> -->
+                <button id="chip3" onclick="betting(20)">$20</button>
+                <button id="chip4" onclick="betting(50)">$50</button>
+                <button id="chip5" onclick="betting(100)">$100</button>
+                
+                <button id="restartBTN" onclick="Restart()">Restart</button>
+            </div>
+
+            <!-- White line, looks good -->
+            <hr></hr>
+
+            <!-- Buttons that the player can interact with -->
+            <div class="userButtons">
+                <button class="hitBTN" onclick="hit()">Hit</button>
+                <button class="dealBTN" onclick="startGame()">Bet</button>
+                <button class="standBTN" onclick="stand()">Stand</button>
+            </div>
+
+        </div>
+    
+    </body>
+</html>
