@@ -1,0 +1,349 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}
+
+.container {
+    height: 100vh;
+    background-color: #000000ce;
+    display: flex;
+}
+
+h1{
+    text-align: center;
+    position: absolute;
+    left: 46vw;
+    top: 2vh;
+    color: #fff;
+    cursor: default;
+}
+
+h5{
+    text-align: center;
+    position: absolute;
+    left: 47.7vw;
+    top: 7vh;
+    color: #fff;
+    cursor: default;
+}
+
+#board{
+    width: 26vw;
+    height: 60vh;
+    background-color: #0e8f2e;
+    position: absolute;
+    margin: 0;
+    top: 12vh;
+    left: 36.7vw;
+    border-radius: 5px;
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+    border: 5px solid #0b7927;
+}
+
+#dealerCards{
+    width: 8vw;
+    height: 23vh;
+    border: 2px solid rgb(255, 240, 25);
+    border-radius: 5px;
+    position: absolute;
+    top: 14%;
+    left: 46.2%;
+}
+
+#Dpoints{
+    visibility: hidden;
+    border: 2px solid white;
+    background-color: white;
+    border-radius: 5px;
+    width: 40px;
+    height: 30px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 900;
+    margin: 0;
+    position: absolute;
+    top: 22%;
+    left: 42%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+#Dpoints::after{
+    content: '';
+    border: 10px solid transparent;
+    border-left-color: white;
+    border-right: 0;
+    position: absolute;
+    left: 35px;
+    top: 45%;
+    margin-top: -5px;
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+h4{
+    text-align: center;
+    position: absolute;
+    left: 47.7%;
+    top: 40%;
+    color: rgb(238, 205, 16);
+    background-color: transparent;
+    cursor: default;
+}
+
+#text{
+    text-align: center;
+    position: absolute;
+    left: 46.7%;
+    top: 42.5%;
+    color: rgb(238, 205, 16);
+    cursor: default;
+}
+
+#playerCards{
+    width: 8vw;
+    height: 23vh;
+    border: 2px solid rgb(255, 240, 25);
+    border-radius: 5px;
+    position: absolute;
+    top: 47vh;
+    left: 46.2vw;
+}
+
+#points{
+    /* visibility: hidden; */
+    opacity: 0;
+    border: 2px solid white;
+    background-color: white;
+    border-radius: 5px;
+    width: 40px;
+    height: 30px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 900;
+    margin: 0;
+    position: absolute;
+    top: 56%;
+    left: 42%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+#points::after{
+    content: '';
+    border: 10px solid transparent;
+    border-left-color: white;
+    border-right: 0;
+    position: absolute;
+    left: 35px;
+    top: 45%;
+    margin-top: -5px;
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+#money{
+    width: 100px;
+    height: 50px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    position: absolute;
+    top: 74%;
+    left: 47.2%;
+}
+
+#playerMoney{
+    position: absolute;
+    top: 24%;
+    left: 27%;
+    text-align: center;   
+}
+
+#chipBorder{
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgb(255, 240, 25);
+    position: absolute;
+    top: 37%;
+    left: 39.2%;
+    border-radius: 5%;
+}
+
+#chip{
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgb(255, 240, 25);
+    position: absolute;
+    top: 37%;
+    left: 39.2%;
+    border-radius: 5%;
+}
+
+.chips {
+    width: 500px;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    left: 36.7%;
+    top: 80.5%;
+}
+
+.chips button {
+    width: 80px;
+    height: 80px;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+.chips #chip1 {
+    border: 2px solid white;
+    transition: all 0.3s ease;
+    background-color: #bd13cc;
+    z-index: 1;
+}
+
+.chips #chip3 {
+    border: 2px solid white;
+    transition: all 0.3s ease;
+    background-color: #e09407;
+    z-index: 1;
+}
+
+.chips #chip4 {
+    border: 2px solid white;
+    transition: all 0.3s ease;
+    background-color: #070acf;
+    z-index: 1;
+}
+
+.chips #chip5 {
+    border: 2px solid white;
+    transition: all 0.3s ease;
+    background-color: #f11079;
+    z-index: 1;
+}
+
+hr{
+    height: 5px;
+    color: rgb(9, 46, 80);
+    background-color:white;
+    border: none;
+    position: absolute;
+    top: 92%;
+    left: 34%;
+    margin: 0px;
+    width: 600px;
+}
+
+#restartBTN{
+    visibility: hidden;
+    opacity: 0;
+    width: 4.5vw;
+    height: 4.5vw;
+    border: 2px solid white;
+    background-color: #d92027;
+    position: absolute;
+    top: 3.75vh;
+    left: 10.75vw;
+}
+
+.userButtons {
+    width: 1vw;
+    height: 6vh;
+    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    /* left: 30%; */
+    /* top: 26.5%; */
+    left: 28vw;
+    top: 26.5vh;
+
+}
+
+.userButtons button {
+    width: 4.5vw;
+    height: 4.5vw;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.5);
+}
+
+.userButtons .hitBTN {
+    opacity: 0;
+    border: 2px solid white;
+    margin-bottom: 20px;
+    background-color: #508052;
+    z-index: 1;
+}
+
+.userButtons .dealBTN {
+    border: 2px solid white;
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
+.userButtons .standBTN {
+    opacity: 0;
+    border: 2px solid white;
+    background-color: #d92027;
+    z-index: 1;
+}
+
+.userButtons .hitBTN:active,
+.userButtons .dealBTN:active,
+.userButtons .standBTN:active, 
+.chips #chip1:active,
+.chips #chip2:active,
+.chips #chip3:active,
+.chips #chip4:active,
+.chips #chip5:active,
+.chips #restartBTN:active{
+    transform: scale(0.9);
+}
+
+#c1{
+    width: 138px;
+    height: 211px; 
+    position: absolute;
+    top: 14%;
+    left: 46.2%;
+    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+#c2{
+    width: 138px;
+    height: 211px; 
+    position: absolute;
+    top: 48%;
+    left: 46.2%;
+    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
